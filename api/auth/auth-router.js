@@ -1,10 +1,18 @@
 const router = require('express').Router();
+const User = require('../user/user-model')
+const bcrypt = require('bcryptjs')
+const mid = require('../middleware/authMiddleware')
 
-router.post('/register', (req, res) => {
+router.post('/register', mid.uniqueUsername, (req, res, ) => {
   res.end('implement register, please!');
 
-  const {username, password} = req.body
+  //checks username doesnt exist
+
+
+
+
   
+
 
   /*
     IMPLEMENT
