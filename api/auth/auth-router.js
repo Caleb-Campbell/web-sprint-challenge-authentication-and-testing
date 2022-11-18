@@ -2,6 +2,10 @@ const router = require('express').Router();
 
 router.post('/register', (req, res) => {
   res.end('implement register, please!');
+
+  const {username, password} = req.body
+  
+
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
