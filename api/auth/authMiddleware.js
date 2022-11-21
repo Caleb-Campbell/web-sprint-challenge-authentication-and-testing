@@ -1,4 +1,4 @@
-const Users = require("../users/users-model");
+const Users = require("../user/user-model");
 
 function validateRequestBody(req, res, next) {
   if (
