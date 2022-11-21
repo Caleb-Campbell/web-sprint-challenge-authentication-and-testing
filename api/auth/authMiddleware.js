@@ -1,6 +1,6 @@
 const Users = require("../user/user-model");
 
-function validateRequestBody(req, res, next) {
+function checkCredentials(req, res, next) {
   if (
     !req.body.username ||
     !req.body.username.trim() ||
@@ -13,7 +13,7 @@ function validateRequestBody(req, res, next) {
   next();
 }
 
-async function checkUsernameAvailable(req, res, next) {
+async function uniqueUsername(req, res, next) {
   try {
     const user = await Users.findBy({ username: req.body.username });
     !user ? next() : res.status(400).json({ message: "username taken" });
@@ -22,7 +22,7 @@ async function checkUsernameAvailable(req, res, next) {
   }
 }
 
-async function checkUsernameExists(req, res, next) {
+async function usernameExists(req, res, next) {
   try {
     const user = await Users.findBy({ username: req.body.username });
     !user
@@ -35,7 +35,7 @@ async function checkUsernameExists(req, res, next) {
 }
 
 module.exports = {
-  validateRequestBody,
-  checkUsernameAvailable,
-  checkUsernameExists,
+  checkCredentials,
+  uniqueUsername,
+  usernameExists,
 };

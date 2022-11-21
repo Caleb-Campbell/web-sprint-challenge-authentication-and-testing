@@ -1,17 +1,17 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const {
-  validateRequestBody,
-  checkUsernameAvailable,
-  checkUsernameExists,
+  checkCredentials,
+  uniqueUsername,
+  usernameExists,
 } = require("./authMiddleware");
 const Users = require("../user/user-model");
 const { tokenBuilder } = require("./authHelper");
 // helpers
 router.post(
   "/register",
-  validateRequestBody,
-  checkUsernameAvailable,
+  checkCredentials,
+  uniqueUsername,
   async (req, res) => {
     let user = req.body;
     const hash = bcrypt.hashSync(user.password, 8);
@@ -29,8 +29,8 @@ router.post(
 
 router.post(
   "/login",
-  validateRequestBody,
-  checkUsernameExists,
+  checkCredentials,
+  usernameExists,
   (req, res, next) => {
     if (bcrypt.compareSync(req.body.password, req.userFromDb.password)) {
       const token = tokenBuilder(req.userFromDb);
