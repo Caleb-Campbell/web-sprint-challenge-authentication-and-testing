@@ -1,16 +1,30 @@
 const router = require('express').Router();
 const User = require('../user/user-model')
 const bcrypt = require('bcryptjs')
-const mid = require('../middleware/authMiddleware')
+const mid = require('./authMiddleware')
 
-router.post('/register', mid.uniqueUsername, (req, res, ) => {
+router.post('/register', mid.uniqueUsername, mid.validateCredentials, async (req, res, ) => {
   res.end('implement register, please!');
 
-  //checks username doesnt exist
+  //checks username doesnt exist - done by middleware
+  //given credentials must be complete. if not - done by middleware
 
+  "/register",
+  validateRequestBody,
+  checkUsernameAvailable,
+  async (req, res) => {
+    let user = req.body;
+    const hash = bcrypt.hashSync(user.password, 8);
 
+    user.password = hash;
 
-
+    try {
+      const newUser = await Users.add(user);
+      res.status(201).json(newUser);
+    } catch (err) {
+      next(err);
+    }
+  }
   
 
 
@@ -41,8 +55,19 @@ router.post('/register', mid.uniqueUsername, (req, res, ) => {
   */
 });
 
-router.post('/login', (req, res) => {
-  res.end('implement login, please!');
+router.post(
+  "/login",
+  validateRequestBody,
+  checkUsernameExists,
+  (req, res, next) => {
+    if (bcrypt.compareSync(req.body.password, req.userFromDb.password)) {
+      const token = tokenBuilder(req.userFromDb);
+
+      res.status(200).json({ message: `welcome, ${req.body.username}`, token });
+    } else {
+      next({ status: 401, message: "invalid credentials" });
+    }
+  }
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
@@ -66,6 +91,6 @@ router.post('/login', (req, res) => {
     4- On FAILED login due to `username` not existing in the db, or `password` being incorrect,
       the response body should include a string exactly as follows: "invalid credentials".
   */
-});
+);
 
 module.exports = router;
